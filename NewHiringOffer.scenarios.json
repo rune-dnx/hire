@@ -1,4 +1,105 @@
 {
   "version": "2",
-  "scenarios": []
+  "scenarios": [
+    {
+      "id": "1779377740886",
+      "name": "Smoke Tests",
+      "savedAt": "2026-05-21T15:35:40.886Z",
+      "inputs": [
+        {
+          "__rowId": "1779377740886",
+          "__description": "Junior dev no skills",
+          "__reason": "Tests Software Engineer tier with 0 experience and empty skills list, giving minimum possible salary.",
+          "CandidateData": {
+            "name": "Alice",
+            "lastName": "Smith",
+            "email": "alice.smith@example.com",
+            "experience": 0,
+            "skills": []
+          }
+        },
+        {
+          "__rowId": "1779377740887",
+          "__description": "Mid-level two skills",
+          "__reason": "Tests Software Engineer tier near upper boundary (experience=4) with two skills contributing a salary bonus.",
+          "CandidateData": {
+            "name": "Bob",
+            "lastName": "Jones",
+            "email": "bob.jones@example.com",
+            "experience": 4,
+            "skills": [
+              "Java",
+              "Python"
+            ]
+          }
+        },
+        {
+          "__rowId": "1779377740888",
+          "__description": "Senior engineer boundary five years",
+          "__reason": "Tests exact lower boundary of Senior Software Engineer tier (experience=5) with three skills.",
+          "CandidateData": {
+            "name": "Clara",
+            "lastName": "Davis",
+            "email": "clara.davis@example.com",
+            "experience": 5,
+            "skills": [
+              "Java",
+              "Python",
+              "Kubernetes"
+            ]
+          }
+        },
+        {
+          "__rowId": "1779377740889",
+          "__description": "Senior engineer upper boundary nine years",
+          "__reason": "Tests the upper boundary of the Senior tier (experience=9) just before Software Architect threshold.",
+          "CandidateData": {
+            "name": "David",
+            "lastName": "Wilson",
+            "email": "david.wilson@example.com",
+            "experience": 9,
+            "skills": [
+              "Java",
+              "Python",
+              "AWS",
+              "Docker"
+            ]
+          }
+        },
+        {
+          "__rowId": "1779377740890",
+          "__description": "Architect many skills high experience",
+          "__reason": "Tests Software Architect tier with high experience and many skills for maximum salary bonus impact.",
+          "CandidateData": {
+            "name": "Eva",
+            "lastName": "Martinez",
+            "email": "eva.martinez@example.com",
+            "experience": 15,
+            "skills": [
+              "Java",
+              "Python",
+              "AWS",
+              "Docker",
+              "Kubernetes",
+              "Terraform",
+              "Go"
+            ]
+          }
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
+    }
+  ]
 }
