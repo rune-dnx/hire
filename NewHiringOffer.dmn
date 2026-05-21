@@ -151,12 +151,12 @@
           <dmndi:StrokeColor red="0" green="0" blue="0" />
           <dmndi:FontColor red="0" green="0" blue="0" />
         </dmndi:DMNStyle>
-        <dc:Bounds x="379" y="165" width="100" height="50" />
+        <dc:Bounds x="400" y="40" width="100" height="50" />
         <dmndi:DMNLabel id="_201A6C0B-A343-49A8-A3C2-BAEC2112E9A4" />
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-drg-_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF" dmnElementRef="_87BE8DEF-9B4D-45EC-8E59-6CD9D0613DCF">
         <di:waypoint x="428.5" y="407" />
-        <di:waypoint x="429" y="215" />
+        <di:waypoint x="450" y="90" />
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
