@@ -1,4 +1,65 @@
 {
   "version": "2",
-  "scenarios": []
+  "scenarios": [
+    {
+      "id": "1779457116280",
+      "name": "Smoke Tests",
+      "savedAt": "2026-05-22T13:38:36.280Z",
+      "inputs": [
+        {
+          "__rowId": "1779457116280",
+          "__description": "Standard loan low LTV",
+          "__reason": "Happy path: moderate loan with solid down payment and high appraisal, low LTV ratio",
+          "loanAmount": 300000,
+          "downPayment": 60000,
+          "propertyAppraisedValue": 400000
+        },
+        {
+          "__rowId": "1779457116281",
+          "__description": "Zero down payment edge case",
+          "__reason": "Edge case: no down payment, full loan amount used, LTV equals loan divided by appraisal",
+          "loanAmount": 250000,
+          "downPayment": 0,
+          "propertyAppraisedValue": 300000
+        },
+        {
+          "__rowId": "1779457116282",
+          "__description": "High LTV near full value",
+          "__reason": "Edge case: down payment is very small relative to loan, LTV close to 1.0",
+          "loanAmount": 500000,
+          "downPayment": 10000,
+          "propertyAppraisedValue": 510000
+        },
+        {
+          "__rowId": "1779457116283",
+          "__description": "Down payment equals loan amount",
+          "__reason": "Edge case: down payment covers entire loan amount, resulting in zero net loan and zero monthly payment",
+          "loanAmount": 200000,
+          "downPayment": 200000,
+          "propertyAppraisedValue": 250000
+        },
+        {
+          "__rowId": "1779457116284",
+          "__description": "Large luxury property low LTV",
+          "__reason": "Happy path: high-value property with substantial down payment, well below typical LTV thresholds",
+          "loanAmount": 1000000,
+          "downPayment": 300000,
+          "propertyAppraisedValue": 1200000
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
+    }
+  ]
 }
