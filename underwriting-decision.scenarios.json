@@ -1,4 +1,85 @@
 {
   "version": "2",
-  "scenarios": []
+  "scenarios": [
+    {
+      "id": "1779456086798",
+      "name": "Smoke Tests",
+      "savedAt": "2026-05-22T13:21:26.798Z",
+      "inputs": [
+        {
+          "__rowId": "1779456086797",
+          "__description": "Strong profile full approval",
+          "__reason": "Tests the ideal APPROVE path: excellent credit, low fraud, DTI well under 43%, LTV under 80%.",
+          "annualIncome": 120000,
+          "monthlyExpenses": 1500,
+          "loanAmount": 300000,
+          "downPayment": 60000,
+          "creditScore": 760,
+          "propertyAppraisedValue": 350000,
+          "fraudRiskLevel": "LOW"
+        },
+        {
+          "__rowId": "1779456086798",
+          "__description": "Acceptable profile borderline LTV",
+          "__reason": "Tests APPROVE with credit 650-699 range and LTV close to but under 95% limit.",
+          "annualIncome": 85000,
+          "monthlyExpenses": 1200,
+          "loanAmount": 280000,
+          "downPayment": 20000,
+          "creditScore": 670,
+          "propertyAppraisedValue": 275000,
+          "fraudRiskLevel": "LOW"
+        },
+        {
+          "__rowId": "1779456086799",
+          "__description": "Deny low credit score",
+          "__reason": "Tests the first DENY rule: credit score below 650 should immediately deny regardless of other inputs.",
+          "annualIncome": 150000,
+          "monthlyExpenses": 800,
+          "loanAmount": 200000,
+          "downPayment": 40000,
+          "creditScore": 620,
+          "propertyAppraisedValue": 250000,
+          "fraudRiskLevel": "LOW"
+        },
+        {
+          "__rowId": "1779456086800",
+          "__description": "Deny high fraud risk",
+          "__reason": "Tests the fraud risk DENY rule: HIGH fraud level triggers denial even with an otherwise strong financial profile.",
+          "annualIncome": 130000,
+          "monthlyExpenses": 1000,
+          "loanAmount": 250000,
+          "downPayment": 50000,
+          "creditScore": 750,
+          "propertyAppraisedValue": 300000,
+          "fraudRiskLevel": "HIGH"
+        },
+        {
+          "__rowId": "1779456086801",
+          "__description": "Deny excessive DTI ratio",
+          "__reason": "Tests the DTI DENY rule: monthly expenses plus estimated payment push DTI above the 43% threshold.",
+          "annualIncome": 60000,
+          "monthlyExpenses": 2800,
+          "loanAmount": 250000,
+          "downPayment": 25000,
+          "creditScore": 700,
+          "propertyAppraisedValue": 280000,
+          "fraudRiskLevel": "LOW"
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
+    }
+  ]
 }
