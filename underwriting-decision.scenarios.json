@@ -1,4 +1,85 @@
 {
   "version": "2",
-  "scenarios": []
+  "scenarios": [
+    {
+      "id": "1779458517401",
+      "name": "Smoke Tests",
+      "savedAt": "2026-05-22T14:01:57.401Z",
+      "inputs": [
+        {
+          "__rowId": "1779458517400",
+          "__description": "Strong profile full approval",
+          "__reason": "Tests the happy path for a premium applicant: high credit score, low fraud risk, strong DTI and LTV ratios, expecting APPROVE with strong financial profile reason.",
+          "annualIncome": 120000,
+          "monthlyExpenses": 1500,
+          "loanAmount": 400000,
+          "downPayment": 80000,
+          "creditScore": 750,
+          "propertyAppraisedValue": 500000,
+          "fraudRiskLevel": "LOW"
+        },
+        {
+          "__rowId": "1779458517401",
+          "__description": "Acceptable profile borderline approval",
+          "__reason": "Tests approval for a borderline-acceptable applicant: credit score just at 650, low fraud, DTI and LTV within limits, expecting APPROVE with acceptable financial profile reason.",
+          "annualIncome": 72000,
+          "monthlyExpenses": 900,
+          "loanAmount": 250000,
+          "downPayment": 25000,
+          "creditScore": 650,
+          "propertyAppraisedValue": 280000,
+          "fraudRiskLevel": "LOW"
+        },
+        {
+          "__rowId": "1779458517402",
+          "__description": "Deny low credit score",
+          "__reason": "Tests the first denial rule: credit score below 650 should trigger immediate denial regardless of all other inputs.",
+          "annualIncome": 100000,
+          "monthlyExpenses": 800,
+          "loanAmount": 300000,
+          "downPayment": 60000,
+          "creditScore": 620,
+          "propertyAppraisedValue": 350000,
+          "fraudRiskLevel": "LOW"
+        },
+        {
+          "__rowId": "1779458517403",
+          "__description": "Deny high fraud risk",
+          "__reason": "Tests the fraud risk denial rule: a MEDIUM or HIGH fraud risk level should result in DENY even when all financial metrics are strong.",
+          "annualIncome": 150000,
+          "monthlyExpenses": 1200,
+          "loanAmount": 350000,
+          "downPayment": 70000,
+          "creditScore": 780,
+          "propertyAppraisedValue": 450000,
+          "fraudRiskLevel": "HIGH"
+        },
+        {
+          "__rowId": "1779458517404",
+          "__description": "Deny high LTV ratio",
+          "__reason": "Tests the LTV denial rule: a very small down payment producing an LTV above 95% should trigger denial, even with a good credit score and low fraud risk.",
+          "annualIncome": 90000,
+          "monthlyExpenses": 1000,
+          "loanAmount": 300000,
+          "downPayment": 5000,
+          "creditScore": 700,
+          "propertyAppraisedValue": 310000,
+          "fraudRiskLevel": "LOW"
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
+    }
+  ]
 }
