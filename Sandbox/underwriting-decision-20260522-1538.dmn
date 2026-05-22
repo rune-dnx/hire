@@ -38,26 +38,6 @@
       <dmn:text>(loanAmount - downPayment) / propertyAppraisedValue</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:decision id="_EXTRACT_DMN_DECISION" name="dmnDecision">
-    <dmn:extensionElements />
-    <dmn:variable id="_EXTRACT_DMN_DECISION_VAR" name="dmnDecision" typeRef="string" />
-    <dmn:informationRequirement id="_EXTRACT_DMN_DECISION_REQ">
-      <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655" />
-    </dmn:informationRequirement>
-    <dmn:literalExpression id="_EXTRACT_DMN_DECISION_EXPR">
-      <dmn:text>Underwriting Decision.dmnDecision</dmn:text>
-    </dmn:literalExpression>
-  </dmn:decision>
-  <dmn:decision id="_EXTRACT_DMN_REASON" name="dmnReason">
-    <dmn:extensionElements />
-    <dmn:variable id="_EXTRACT_DMN_REASON_VAR" name="dmnReason" typeRef="string" />
-    <dmn:informationRequirement id="_EXTRACT_DMN_REASON_REQ">
-      <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655" />
-    </dmn:informationRequirement>
-    <dmn:literalExpression id="_EXTRACT_DMN_REASON_EXPR">
-      <dmn:text>Underwriting Decision.dmnReason</dmn:text>
-    </dmn:literalExpression>
-  </dmn:decision>
   <dmn:inputData id="_FC133BE5-348C-48D8-8308-479456F905D6" name="loanAmount">
     <dmn:extensionElements />
     <dmn:variable id="_F058C044-5C20-4016-85F5-CD053141E2CA" name="loanAmount" typeRef="number" />
