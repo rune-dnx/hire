@@ -58,14 +58,6 @@
       <dmn:text>Underwriting Decision.dmnReason</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:inputData id="_E16B2168-DC27-4794-A32F-613674B18EBD" name="annualIncome">
-    <dmn:extensionElements />
-    <dmn:variable id="_92847F0B-0179-45BD-A397-FE530EA7C148" name="annualIncome" typeRef="number" />
-  </dmn:inputData>
-  <dmn:inputData id="_B8F5562E-DEAE-4A25-9D15-B0147076AC34" name="monthlyExpenses">
-    <dmn:extensionElements />
-    <dmn:variable id="_56F652ED-BAD2-4A13-8D83-3E632276AD06" name="monthlyExpenses" typeRef="number" />
-  </dmn:inputData>
   <dmn:inputData id="_FC133BE5-348C-48D8-8308-479456F905D6" name="loanAmount">
     <dmn:extensionElements />
     <dmn:variable id="_F058C044-5C20-4016-85F5-CD053141E2CA" name="loanAmount" typeRef="number" />
@@ -74,17 +66,9 @@
     <dmn:extensionElements />
     <dmn:variable id="_4CA71998-D97E-42A8-9B7C-CB49D9C210EA" name="downPayment" typeRef="number" />
   </dmn:inputData>
-  <dmn:inputData id="_99D380B8-E42E-4E95-A35A-A823CE6CE282" name="creditScore">
-    <dmn:extensionElements />
-    <dmn:variable id="_60E71E60-397A-4A6F-9658-9E46C2D6C7FA" name="creditScore" typeRef="number" />
-  </dmn:inputData>
   <dmn:inputData id="_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" name="propertyAppraisedValue">
     <dmn:extensionElements />
     <dmn:variable id="_59F7D28A-166A-4482-AD8A-FDE534A50F78" name="propertyAppraisedValue" typeRef="number" />
-  </dmn:inputData>
-  <dmn:inputData id="_FFA6BC31-8707-44C6-A902-E132C1126B4A" name="fraudRiskLevel">
-    <dmn:extensionElements />
-    <dmn:variable id="_76A81A8B-58B7-4886-9740-4347AE9A2C95" name="fraudRiskLevel" typeRef="string" />
   </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_3999C530-5ACA-4E91-A219-F98E300FA9AB" name="Default DRD" useAlternativeInputDataShape="false">
@@ -92,24 +76,6 @@
         <kie:ComponentsWidthsExtension>
         </kie:ComponentsWidthsExtension>
       </di:extension>
-      <dmndi:DMNShape dmnElementRef="_E16B2168-DC27-4794-A32F-613674B18EBD" isCollapsed="false" id="dmnshape-_E16B2168-DC27-4794-A32F-613674B18EBD">
-        <dmndi:DMNStyle id="_D0FFD5D8-4A40-4D72-B616-68BF08AEBB95">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
-        </dmndi:DMNStyle>
-        <dc:Bounds x="694" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_F652F6FB-F872-4699-9787-CA33E044BCF0" />
-      </dmndi:DMNShape>
-      <dmndi:DMNShape dmnElementRef="_B8F5562E-DEAE-4A25-9D15-B0147076AC34" isCollapsed="false" id="dmnshape-_B8F5562E-DEAE-4A25-9D15-B0147076AC34">
-        <dmndi:DMNStyle id="_748E0C96-00EE-40D6-B348-D9B2144814AE">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
-        </dmndi:DMNStyle>
-        <dc:Bounds x="500" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_4A7EDDF8-84AA-48A6-B9A8-B3A120795A5B" />
-      </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_FC133BE5-348C-48D8-8308-479456F905D6" isCollapsed="false" id="dmnshape-_FC133BE5-348C-48D8-8308-479456F905D6">
         <dmndi:DMNStyle id="_6FE7DB50-B8AE-421A-9273-469F72BE9533">
           <dmndi:FillColor red="255" green="255" blue="255" />
@@ -128,15 +94,6 @@
         <dc:Bounds x="888" y="598" width="134" height="61" />
         <dmndi:DMNLabel id="_FDEE813B-E203-4ACF-809A-51CDD3C29547" />
       </dmndi:DMNShape>
-      <dmndi:DMNShape dmnElementRef="_99D380B8-E42E-4E95-A35A-A823CE6CE282" isCollapsed="false" id="dmnshape-_99D380B8-E42E-4E95-A35A-A823CE6CE282">
-        <dmndi:DMNStyle id="_1CCD5A7D-C21D-4E3C-8033-1731598F1248">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
-        </dmndi:DMNStyle>
-        <dc:Bounds x="306" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_EB3EA647-5369-4D2E-8EAD-5D2CAFF907F9" />
-      </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" isCollapsed="false" id="dmnshape-_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE">
         <dmndi:DMNStyle id="_36913AB2-CA86-4A01-A918-2B049E21AFD8">
           <dmndi:FillColor red="255" green="255" blue="255" />
@@ -145,15 +102,6 @@
         </dmndi:DMNStyle>
         <dc:Bounds x="1296" y="598" width="134" height="61" />
         <dmndi:DMNLabel id="_38B3904A-F87D-4A6D-99A2-87CFD1C682B3" />
-      </dmndi:DMNShape>
-      <dmndi:DMNShape dmnElementRef="_FFA6BC31-8707-44C6-A902-E132C1126B4A" isCollapsed="false" id="dmnshape-_FFA6BC31-8707-44C6-A902-E132C1126B4A">
-        <dmndi:DMNStyle id="_557AABB3-3108-444D-A317-392883FE4667">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
-        </dmndi:DMNStyle>
-        <dc:Bounds x="112" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_03A8BB7F-2499-4E22-ADC1-85AE00A2F50E" />
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5" isCollapsed="false" id="dmnshape-_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5">
         <dmndi:DMNStyle id="_30807990-F8FB-4548-9D9F-A66FC9BBE36A">
