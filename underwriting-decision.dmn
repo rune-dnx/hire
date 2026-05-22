@@ -44,7 +44,7 @@
       <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_EXTRACT_DMN_DECISION_EXPR">
-      <dmn:text>Final Underwriting Decision.Underwriting Decision.dmnDecision</dmn:text>
+      <dmn:text>Final Underwriting Decision["Underwriting Decision"].dmnDecision</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
 <dmn:decision id="_EXTRACT_DMN_REASON" name="dmnReason">
@@ -54,7 +54,7 @@
       <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_EXTRACT_DMN_REASON_EXPR">
-      <dmn:text>Final Underwriting Decision.Underwriting Decision.dmnReason</dmn:text>
+      <dmn:text>Final Underwriting Decision["Underwriting Decision"].dmnReason</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
 <dmn:inputData id="_E16B2168-DC27-4794-A32F-613674B18EBD" name="annualIncome">
