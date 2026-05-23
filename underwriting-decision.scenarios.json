@@ -80,6 +80,115 @@
         "columnWidths": {},
         "hiddenColumns": []
       }
+    },
+    {
+      "id": "1779533534985",
+      "name": "Strong profile full approval",
+      "savedAt": "2026-05-23T10:52:14.985Z",
+      "inputs": [
+        {
+          "__description": "Strong profile full approval",
+          "__reason": "Tests the happy path for a premium applicant: high credit score, low fraud risk, strong DTI and LTV ratios, expecting APPROVE with strong financial profile reason.",
+          "annualIncome": 120000,
+          "monthlyExpenses": 1500,
+          "loanAmount": 400000,
+          "downPayment": 80000,
+          "creditScore": 750,
+          "propertyAppraisedValue": 500000,
+          "fraudRiskLevel": "LOW",
+          "__rowId": "1"
+        }
+      ],
+      "results": [
+        {
+          "namespace": "https://kie.apache.org/dmn/_underwriting-decision",
+          "modelName": "underwriting-decision",
+          "dmnContext": {
+            "__reason": "Tests the happy path for a premium applicant: high credit score, low fraud risk, strong DTI and LTV ratios, expecting APPROVE with strong financial profile reason.",
+            "creditScore": 750,
+            "annualIncome": 120000,
+            "Loan to Value Ratio": 0.64,
+            "Underwriting Decision": {
+              "dmnDecision": "APPROVE",
+              "dmnReason": "Strong financial profile"
+            },
+            "loanAmount": 400000,
+            "__rowId": "1779533521669",
+            "propertyAppraisedValue": 500000,
+            "fraudRiskLevel": "LOW",
+            "dmnDecision": "APPROVE",
+            "monthlyExpenses": 1500,
+            "Monthly Payment Estimate": 1920,
+            "downPayment": 80000,
+            "Debt to Income Ratio": 0.342,
+            "dmnReason": "Strong financial profile",
+            "__description": "Strong profile full approval"
+          },
+          "messages": [],
+          "decisionResults": [
+            {
+              "decisionId": "_EXTRACT_DMN_DECISION",
+              "decisionName": "dmnDecision",
+              "result": "APPROVE",
+              "messages": [],
+              "evaluationHitIds": {},
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_138B996F-CC5E-40D1-8A3D-442758EF4655",
+              "decisionName": "Underwriting Decision",
+              "result": {
+                "dmnDecision": "APPROVE",
+                "dmnReason": "Strong financial profile"
+              },
+              "messages": [],
+              "evaluationHitIds": {
+                "_533BA971-8DCD-4E5E-926D-5E85EFB7A99A": 1
+              },
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5",
+              "decisionName": "Monthly Payment Estimate",
+              "result": 1920,
+              "messages": [],
+              "evaluationHitIds": {},
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_4D630624-601F-4102-803C-9973C6601DF1",
+              "decisionName": "Loan to Value Ratio",
+              "result": 0.64,
+              "messages": [],
+              "evaluationHitIds": {},
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_E88896B2-607C-470C-8931-406359CE18A7",
+              "decisionName": "Debt to Income Ratio",
+              "result": 0.342,
+              "messages": [],
+              "evaluationHitIds": {},
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_EXTRACT_DMN_REASON",
+              "decisionName": "dmnReason",
+              "result": "Strong financial profile",
+              "messages": [],
+              "evaluationHitIds": {},
+              "evaluationStatus": "SUCCEEDED"
+            }
+          ],
+          "invalidElementPaths": []
+        }
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      },
+      "parentId": "1779458517401",
+      "parentRowId": "1779533521669"
     }
   ]
 }
