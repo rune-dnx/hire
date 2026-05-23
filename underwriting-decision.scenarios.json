@@ -4,10 +4,10 @@
     {
       "id": "1779458517401",
       "name": "Smoke Tests",
-      "savedAt": "2026-05-22T14:01:57.401Z",
+      "savedAt": "2026-05-23T10:52:01.670Z",
       "inputs": [
         {
-          "__rowId": "1779458517400",
+          "__rowId": "1779533521669",
           "__description": "Strong profile full approval",
           "__reason": "Tests the happy path for a premium applicant: high credit score, low fraud risk, strong DTI and LTV ratios, expecting APPROVE with strong financial profile reason.",
           "annualIncome": 120000,
@@ -19,7 +19,7 @@
           "fraudRiskLevel": "LOW"
         },
         {
-          "__rowId": "1779458517401",
+          "__rowId": "1779533521670",
           "__description": "Acceptable profile borderline approval",
           "__reason": "Tests approval for a borderline-acceptable applicant: credit score just at 650, low fraud, DTI and LTV within limits, expecting APPROVE with acceptable financial profile reason.",
           "annualIncome": 72000,
@@ -31,7 +31,7 @@
           "fraudRiskLevel": "LOW"
         },
         {
-          "__rowId": "1779458517402",
+          "__rowId": "1779533521671",
           "__description": "Deny low credit score",
           "__reason": "Tests the first denial rule: credit score below 650 should trigger immediate denial regardless of all other inputs.",
           "annualIncome": 100000,
@@ -43,7 +43,7 @@
           "fraudRiskLevel": "LOW"
         },
         {
-          "__rowId": "1779458517403",
+          "__rowId": "1779533521672",
           "__description": "Deny high fraud risk",
           "__reason": "Tests the fraud risk denial rule: a MEDIUM or HIGH fraud risk level should result in DENY even when all financial metrics are strong.",
           "annualIncome": 150000,
@@ -55,7 +55,7 @@
           "fraudRiskLevel": "HIGH"
         },
         {
-          "__rowId": "1779458517404",
+          "__rowId": "1779533521673",
           "__description": "Deny high LTV ratio",
           "__reason": "Tests the LTV denial rule: a very small down payment producing an LTV above 95% should trigger denial, even with a good credit score and low fraud risk.",
           "annualIncome": 90000,
