@@ -1,4 +1,29 @@
 {
   "version": "2",
-  "scenarios": []
+  "scenarios": [
+    {
+      "id": "1779533464554",
+      "name": "a scenario",
+      "savedAt": "2026-05-23T10:51:04.554Z",
+      "inputs": [
+        {
+          "__rowId": "1779533464553",
+          "__description": "Jon smoketest scenario",
+          "__reason": "Jon's smoketest with a good credit score, moderate loan, and solid income - should be eligible.",
+          "CreditScore": 720,
+          "LoanAmount": 15000,
+          "AnnualIncome": 90000
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
+    }
+  ]
 }
