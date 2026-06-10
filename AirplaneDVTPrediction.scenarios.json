@@ -1,4 +1,125 @@
 {
   "version": "3",
-  "scenarios": []
+  "scenarios": [
+    {
+      "id": "1781087029743",
+      "name": "Smoke Tests",
+      "savedAt": "2026-06-10T10:23:49.743Z",
+      "inputs": [
+        {
+          "__rowId": "1781087029742",
+          "__description": "Low Risk All Clear",
+          "__reason": "Happy path: healthy patient, short flight, no risk factors, intervention available — expects OK to go.",
+          "LVEF": 65,
+          "EffectiveInterventionAvailable": true,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.75,
+          "PatientBodyWeight": 80,
+          "FlightData": {
+            "Distance": 3000,
+            "Duration": 5,
+            "Cost": 350
+          }
+        },
+        {
+          "__rowId": "1781087029743",
+          "__description": "High Risk Cancer No Intervention",
+          "__reason": "High DVT risk due to active cancer on a long-haul flight with no intervention — expects Cancel flight.",
+          "LVEF": 60,
+          "EffectiveInterventionAvailable": false,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": true,
+          "PatientHeight": 1.7,
+          "PatientBodyWeight": 75,
+          "FlightData": {
+            "Distance": 9000,
+            "Duration": 12,
+            "Cost": 1200
+          }
+        },
+        {
+          "__rowId": "1781087029744",
+          "__description": "Moderate Risk Pregnancy Intervention",
+          "__reason": "Moderate DVT risk from pregnancy on a long-haul flight but intervention available — expects OK to go.",
+          "LVEF": 58,
+          "EffectiveInterventionAvailable": true,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": true,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.65,
+          "PatientBodyWeight": 72,
+          "FlightData": {
+            "Distance": 7500,
+            "Duration": 10,
+            "Cost": 900
+          }
+        },
+        {
+          "__rowId": "1781087029745",
+          "__description": "Moderate Risk No Intervention Modify",
+          "__reason": "Moderate DVT risk from obesity and a medium-distance flight with no intervention — expects Modify plans.",
+          "LVEF": 50,
+          "EffectiveInterventionAvailable": false,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.68,
+          "PatientBodyWeight": 95,
+          "FlightData": {
+            "Distance": 6000,
+            "Duration": 9,
+            "Cost": 700
+          }
+        },
+        {
+          "__rowId": "1781087029746",
+          "__description": "Severe CHF High Risk Cancel",
+          "__reason": "LVEF below 20 triggers High CHF risk; combined with a long-haul flight and no intervention — expects Cancel flight.",
+          "LVEF": 15,
+          "EffectiveInterventionAvailable": false,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.8,
+          "PatientBodyWeight": 85,
+          "FlightData": {
+            "Distance": 8000,
+            "Duration": 11,
+            "Cost": 1100
+          }
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
+    }
+  ]
 }
