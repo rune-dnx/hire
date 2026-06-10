@@ -120,6 +120,218 @@
         "columnWidths": {},
         "hiddenColumns": []
       }
+    },
+    {
+      "id": "1781087032295",
+      "name": "Scenario 2",
+      "savedAt": "2026-06-10T10:23:52.295Z",
+      "inputs": [
+        {
+          "__rowId": "1781087029742",
+          "__description": "Low Risk All Clear",
+          "__reason": "Happy path: healthy patient, short flight, no risk factors, intervention available — expects OK to go.",
+          "LVEF": 65,
+          "EffectiveInterventionAvailable": true,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.75,
+          "PatientBodyWeight": 80,
+          "FlightData": {
+            "Distance": 3000,
+            "Duration": 5,
+            "Cost": 350
+          }
+        },
+        {
+          "__rowId": "1781087029743",
+          "__description": "High Risk Cancer No Intervention",
+          "__reason": "High DVT risk due to active cancer on a long-haul flight with no intervention — expects Cancel flight.",
+          "LVEF": 60,
+          "EffectiveInterventionAvailable": false,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": true,
+          "PatientHeight": 1.7,
+          "PatientBodyWeight": 75,
+          "FlightData": {
+            "Distance": 9000,
+            "Duration": 12,
+            "Cost": 1200
+          }
+        },
+        {
+          "__rowId": "1781087029744",
+          "__description": "Moderate Risk Pregnancy Intervention",
+          "__reason": "Moderate DVT risk from pregnancy on a long-haul flight but intervention available — expects OK to go.",
+          "LVEF": 58,
+          "EffectiveInterventionAvailable": true,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": true,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.65,
+          "PatientBodyWeight": 72,
+          "FlightData": {
+            "Distance": 7500,
+            "Duration": 10,
+            "Cost": 900
+          }
+        },
+        {
+          "__rowId": "1781087029745",
+          "__description": "Moderate Risk No Intervention Modify",
+          "__reason": "Moderate DVT risk from obesity and a medium-distance flight with no intervention — expects Modify plans.",
+          "LVEF": 50,
+          "EffectiveInterventionAvailable": false,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.68,
+          "PatientBodyWeight": 95,
+          "FlightData": {
+            "Distance": 6000,
+            "Duration": 9,
+            "Cost": 700
+          }
+        },
+        {
+          "__rowId": "1781087029746",
+          "__description": "Severe CHF High Risk Cancel",
+          "__reason": "LVEF below 20 triggers High CHF risk; combined with a long-haul flight and no intervention — expects Cancel flight.",
+          "LVEF": 15,
+          "EffectiveInterventionAvailable": false,
+          "RecentAMI": false,
+          "HormoneTherapy": false,
+          "IsPregnant": false,
+          "Hypercoagulable": false,
+          "RecentSurgery": false,
+          "HasCancer": false,
+          "PatientHeight": 1.8,
+          "PatientBodyWeight": 85,
+          "FlightData": {
+            "Distance": 8000,
+            "Duration": 11,
+            "Cost": 1100
+          }
+        }
+      ],
+      "expected": {},
+      "backgroundInputs": {},
+      "results": [
+        {
+          "namespace": "http://www.trisotech.com/definitions/_5fd62b57-473f-496d-9cfc-ae360c592a24",
+          "modelName": "AirplanePrediction",
+          "dmnContext": {
+            "__reason": "Happy path: healthy patient, short flight, no risk factors, intervention available — expects OK to go.",
+            "PatientBodyWeight": 80,
+            "CalculateBMI": 26.122448979591837,
+            "FlightRiskDVT": "Low",
+            "HasCancer": false,
+            "LVEF": 65,
+            "RecentAMI": false,
+            "DVTRiskFactors": "Low",
+            "IsPregnant": false,
+            "EffectiveInterventionAvailable": true,
+            "HormoneTherapy": false,
+            "CHFRisk": "Low",
+            "__rowId": "1781087029742",
+            "FlightDetails": "Low",
+            "RecentSurgery": false,
+            "FlightData": {
+              "Duration": 5,
+              "Cost": 350,
+              "Distance": 3000
+            },
+            "Hypercoagulable": false,
+            "FlightDecision": "OK to go",
+            "BMIEquation": "function BMIEquation( BodyWeightkg, BodyHeightMeters )",
+            "__description": "Low Risk All Clear",
+            "PatientHeight": 1.75
+          },
+          "messages": [],
+          "decisionResults": [
+            {
+              "decisionId": "_d18b383d-f28d-4ffe-bc92-e7ed1724db17",
+              "decisionName": "DVTRiskFactors",
+              "result": "Low",
+              "messages": [],
+              "evaluationHitIds": {
+                "_df18c73f-99cd-4497-b49b-f59805c849e4": 1
+              },
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_2f8a702c-b8d9-4cce-83c4-a3e0f0b7071a",
+              "decisionName": "CalculateBMI",
+              "result": 26.122448979591837,
+              "messages": [],
+              "evaluationHitIds": {},
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_4996f7b8-d657-4564-98dd-715c74c37d2e",
+              "decisionName": "CHFRisk",
+              "result": "Low",
+              "messages": [],
+              "evaluationHitIds": {
+                "_7450f011-27cb-42ce-a82d-5c52685f6b67": 1
+              },
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_e6084413-3bf9-4e06-a2ba-6e2448289922",
+              "decisionName": "FlightRiskDVT",
+              "result": "Low",
+              "messages": [],
+              "evaluationHitIds": {
+                "_d0a016f5-c996-4a32-a1e1-3763cf6c9245": 1
+              },
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_1eb45f4a-db35-4bcd-930e-2620ef67cf2a",
+              "decisionName": "FlightDecision",
+              "result": "OK to go",
+              "messages": [],
+              "evaluationHitIds": {
+                "_65532e27-56fa-4bad-88c3-db6240b87e7b": 1
+              },
+              "evaluationStatus": "SUCCEEDED"
+            },
+            {
+              "decisionId": "_04ceea5e-e4ab-4ec8-8a53-91ad256143d3",
+              "decisionName": "FlightDetails",
+              "result": "Low",
+              "messages": [],
+              "evaluationHitIds": {
+                "_57fa2fe0-0756-4b7d-a7db-9f76fb811585": 1
+              },
+              "evaluationStatus": "SUCCEEDED"
+            }
+          ],
+          "invalidElementPaths": []
+        },
+        null,
+        null,
+        null,
+        null
+      ],
+      "tableConfig": {
+        "columnWidths": {},
+        "hiddenColumns": []
+      }
     }
   ]
 }
