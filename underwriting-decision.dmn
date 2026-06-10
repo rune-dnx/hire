@@ -1,6 +1,28 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns="https://kie.apache.org/dmn/_underwriting-decision" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="https://www.omg.org/spec/DMN/20240513/FEEL/" id="_DCCA6051-D392-4780-BB56-699AB9682588" name="underwriting-decision" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.apache.org/dmn/_underwriting-decision">
-  <dmn:extensionElements />
+<?xml version="1.0" encoding="UTF-8"?><dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20240513/MODEL/" xmlns="https://kie.apache.org/dmn/_underwriting-decision" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="https://kie.org/dmn/extensions/1.0" xmlns:dmndi="https://www.omg.org/spec/DMN/20230324/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="https://www.omg.org/spec/DMN/20240513/FEEL/" id="_DCCA6051-D392-4780-BB56-699AB9682588" name="underwriting-decision" expressionLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" typeLanguage="https://www.omg.org/spec/DMN/20240513/FEEL/" namespace="https://kie.apache.org/dmn/_underwriting-decision"><dmn:description>## Overview
+Evaluates a residential mortgage loan application and returns an underwriting decision (APPROVE or DENY) with a reason. The model computes three intermediate financial metrics — Monthly Payment Estimate, Debt to Income Ratio, and Loan to Value Ratio — then applies a prioritized rule set against credit score, fraud risk level, and those ratios.
+
+## Inputs
+- annualIncome (number) — applicant's gross annual income in currency units
+- monthlyExpenses (number) — applicant's recurring monthly obligations excluding the new loan payment
+- loanAmount (number) — requested loan principal
+- downPayment (number) — cash down payment applied toward the loan
+- creditScore (number) — applicant's credit score
+- propertyAppraisedValue (number) — independently appraised market value of the property
+- fraudRiskLevel (string) — fraud screening result; accepted values: "LOW", "MEDIUM", "HIGH"
+
+## Do not use when
+- The loan is not a standard mortgage (e.g. commercial, bridge, or HELOC products with different ratio thresholds)
+- fraudRiskLevel has not been pre-assessed by an upstream fraud screening service
+- annualIncome or propertyAppraisedValue is zero or null (causes division by zero in ratio calculations)
+
+## Main entry points
+- Underwriting Decision (tUnderwritingResult) — primary output; fields: dmnDecision (string: "APPROVE" or "DENY"), dmnReason (string: human-readable denial or approval reason)
+- dmnDecision (string) — convenience extract of Underwriting Decision.dmnDecision
+- dmnReason (string) — convenience extract of Underwriting Decision.dmnReason
+- Debt to Income Ratio (number) — computed DTI ratio
+- Loan to Value Ratio (number) — computed LTV ratio
+- Monthly Payment Estimate (number) — estimated monthly payment</dmn:description>
+  <dmn:extensionElements/>
   <dmn:itemDefinition id="_068AE2A7-7469-48C7-9F13-5E3BF00DFACD" name="tUnderwritingResult" isCollection="false">
     <dmn:itemComponent id="_D5811268-5C95-4055-935D-D7BAB73F43F7" name="dmnDecision" isCollection="false">
       <dmn:typeRef>string</dmn:typeRef>
@@ -9,65 +31,124 @@
       <dmn:typeRef>string</dmn:typeRef>
     </dmn:itemComponent>
   </dmn:itemDefinition>
-  <dmn:decision id="_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5" name="Monthly Payment Estimate">
-    <dmn:extensionElements />
-    <dmn:variable id="_DDABA657-F6D7-4534-9D12-83DDDD3E62AB" name="Monthly Payment Estimate" typeRef="number" />
+  <dmn:decision id="_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5" name="Monthly Payment Estimate"><dmn:description>## What it decides
+Estimates the applicant's monthly loan payment for the financed amount.
+## Call when
+- loanAmount and downPayment are both provided and downPayment &lt; loanAmount
+## Do not call when
+- loanAmount equals downPayment (net financed amount is zero; result will be zero)
+## Inputs
+- loanAmount (number) — total requested loan
+- downPayment (number) — upfront cash payment
+## Output
+`(loanAmount - downPayment) * 0.006` — flat-rate approximation of monthly payment; returns a number in currency units.
+## Examples
+- loanAmount=400000, downPayment=80000 → `1920`
+- loanAmount=250000, downPayment=25000 → `1350`</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_DDABA657-F6D7-4534-9D12-83DDDD3E62AB" name="Monthly Payment Estimate" typeRef="number"/>
     <dmn:informationRequirement id="_20C0928C-7291-4414-B5C4-5F59D8D131E8">
-      <dmn:requiredInput href="#_FC133BE5-348C-48D8-8308-479456F905D6" />
+      <dmn:requiredInput href="#_FC133BE5-348C-48D8-8308-479456F905D6"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_3081D662-7A18-495D-9EDD-A6789A1FCAB2">
-      <dmn:requiredInput href="#_792F25A0-FDEB-4AE9-B801-43FD945F16CF" />
+      <dmn:requiredInput href="#_792F25A0-FDEB-4AE9-B801-43FD945F16CF"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_6FA43A52-0BE2-4EB2-AF6A-C694E4FFFDF8">
       <dmn:text>(loanAmount - downPayment) * 0.006</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:decision id="_E88896B2-607C-470C-8931-406359CE18A7" name="Debt to Income Ratio">
-    <dmn:extensionElements />
-    <dmn:variable id="_5802D75E-8BF9-47B5-A94E-BAA9432F20F4" name="Debt to Income Ratio" typeRef="number" />
+  <dmn:decision id="_E88896B2-607C-470C-8931-406359CE18A7" name="Debt to Income Ratio"><dmn:description>## What it decides
+Computes the applicant's debt-to-income (DTI) ratio as a decimal fraction.
+## Call when
+- annualIncome, monthlyExpenses, and Monthly Payment Estimate are all available
+## Do not call when
+- annualIncome is zero (causes division by zero)
+## Inputs
+- annualIncome (number) — gross annual income
+- monthlyExpenses (number) — existing monthly obligations
+- Monthly Payment Estimate (number) — output of the Monthly Payment Estimate decision
+## Output
+`(monthlyExpenses + Monthly Payment Estimate) / (annualIncome / 12)` — decimal ratio (e.g. 0.35 = 35% DTI). Values above 0.43 trigger DENY in the Underwriting Decision.
+## Examples
+- annualIncome=120000, monthlyExpenses=1500, Monthly Payment Estimate=1920 → `0.342`
+- annualIncome=72000, monthlyExpenses=900, Monthly Payment Estimate=1350 → `0.375`</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_5802D75E-8BF9-47B5-A94E-BAA9432F20F4" name="Debt to Income Ratio" typeRef="number"/>
     <dmn:informationRequirement id="_AA318B21-ED8C-427D-AB08-2D47098786A1">
-      <dmn:requiredInput href="#_E16B2168-DC27-4794-A32F-613674B18EBD" />
+      <dmn:requiredInput href="#_E16B2168-DC27-4794-A32F-613674B18EBD"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_43AC3880-40F3-420A-84D5-F02BB55C0D2F">
-      <dmn:requiredInput href="#_B8F5562E-DEAE-4A25-9D15-B0147076AC34" />
+      <dmn:requiredInput href="#_B8F5562E-DEAE-4A25-9D15-B0147076AC34"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_4FFD6F0D-308D-4FE5-A8F0-EBB2135A0FBA">
-      <dmn:requiredDecision href="#_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5" />
+      <dmn:requiredDecision href="#_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_C299A02E-ADD7-4515-B1D3-B2AF231714D5">
       <dmn:text>(monthlyExpenses + Monthly Payment Estimate) / (annualIncome / 12)</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:decision id="_4D630624-601F-4102-803C-9973C6601DF1" name="Loan to Value Ratio">
-    <dmn:extensionElements />
-    <dmn:variable id="_B7C8D362-F23D-451E-BD06-BBB9593DD976" name="Loan to Value Ratio" typeRef="number" />
+  <dmn:decision id="_4D630624-601F-4102-803C-9973C6601DF1" name="Loan to Value Ratio"><dmn:description>## What it decides
+Computes the loan-to-value (LTV) ratio as a decimal fraction.
+## Call when
+- loanAmount, downPayment, and propertyAppraisedValue are all available
+## Do not call when
+- propertyAppraisedValue is zero (causes division by zero)
+## Inputs
+- loanAmount (number) — total requested loan
+- downPayment (number) — upfront cash payment
+- propertyAppraisedValue (number) — appraised property value
+## Output
+`(loanAmount - downPayment) / propertyAppraisedValue` — decimal ratio (e.g. 0.80 = 80% LTV). Values above 0.95 trigger DENY; values above 0.80 restrict to the lower credit score approval tier.
+## Examples
+- loanAmount=400000, downPayment=80000, propertyAppraisedValue=500000 → `0.64`
+- loanAmount=300000, downPayment=5000, propertyAppraisedValue=310000 → `0.952`</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_B7C8D362-F23D-451E-BD06-BBB9593DD976" name="Loan to Value Ratio" typeRef="number"/>
     <dmn:informationRequirement id="_59231442-3396-4276-864C-14C0114DC244">
-      <dmn:requiredInput href="#_FC133BE5-348C-48D8-8308-479456F905D6" />
+      <dmn:requiredInput href="#_FC133BE5-348C-48D8-8308-479456F905D6"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_F49C83C7-3BB6-410F-8987-BDCD20388193">
-      <dmn:requiredInput href="#_792F25A0-FDEB-4AE9-B801-43FD945F16CF" />
+      <dmn:requiredInput href="#_792F25A0-FDEB-4AE9-B801-43FD945F16CF"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_65F1D87F-6921-4F13-9EC5-4C2AB4AD8D3C">
-      <dmn:requiredInput href="#_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" />
+      <dmn:requiredInput href="#_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_A79F1848-F7B4-4107-9E4E-43D6DF8D6CBE">
       <dmn:text>(loanAmount - downPayment) / propertyAppraisedValue</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:decision id="_138B996F-CC5E-40D1-8A3D-442758EF4655" name="Underwriting Decision">
-    <dmn:extensionElements />
-    <dmn:variable id="_F2F0FF50-BEE4-4536-A9C5-5E76EDC0AA81" name="Underwriting Decision" typeRef="tUnderwritingResult" />
+  <dmn:decision id="_138B996F-CC5E-40D1-8A3D-442758EF4655" name="Underwriting Decision"><dmn:description>## What it decides
+Applies a FIRST-hit prioritized rule set to determine whether the loan application is approved or denied, and provides a reason.
+## Call when
+- creditScore, fraudRiskLevel, Debt to Income Ratio, and Loan to Value Ratio are all available
+## Do not call when
+- Any upstream ratio decision returned null (indicates a missing or invalid input)
+## Inputs
+- creditScore (number) — applicant credit score
+- fraudRiskLevel (string) — "LOW", "MEDIUM", or "HIGH"
+- Debt to Income Ratio (number) — computed DTI decimal
+- Loan to Value Ratio (number) — computed LTV decimal
+## Output
+Returns tUnderwritingResult with two fields:
+- dmnDecision (string): "APPROVE" or "DENY"
+- dmnReason (string): human-readable explanation (e.g. "Credit score below underwriting minimum", "Strong financial profile")
+## Examples
+- creditScore=620, fraudRiskLevel="LOW", DTI=0.30, LTV=0.70 → `DENY / Credit score below underwriting minimum`
+- creditScore=780, fraudRiskLevel="HIGH", DTI=0.25, LTV=0.60 → `DENY / Elevated fraud risk detected`
+- creditScore=750, fraudRiskLevel="LOW", DTI=0.34, LTV=0.64 → `APPROVE / Strong financial profile`</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_F2F0FF50-BEE4-4536-A9C5-5E76EDC0AA81" name="Underwriting Decision" typeRef="tUnderwritingResult"/>
     <dmn:informationRequirement id="_A7F905DE-23A5-49A0-BC3F-C78142A0F6A6">
-      <dmn:requiredDecision href="#_E88896B2-607C-470C-8931-406359CE18A7" />
+      <dmn:requiredDecision href="#_E88896B2-607C-470C-8931-406359CE18A7"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_7E02F394-CE71-4A14-83DE-1351B615FC2A">
-      <dmn:requiredDecision href="#_4D630624-601F-4102-803C-9973C6601DF1" />
+      <dmn:requiredDecision href="#_4D630624-601F-4102-803C-9973C6601DF1"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_FEE2F9D2-F162-41CE-BA04-BDE9D712513D">
-      <dmn:requiredInput href="#_99D380B8-E42E-4E95-A35A-A823CE6CE282" />
+      <dmn:requiredInput href="#_99D380B8-E42E-4E95-A35A-A823CE6CE282"/>
     </dmn:informationRequirement>
     <dmn:informationRequirement id="_8FA7A42A-7568-491A-9B87-1559B976C3CD">
-      <dmn:requiredInput href="#_FFA6BC31-8707-44C6-A902-E132C1126B4A" />
+      <dmn:requiredInput href="#_FFA6BC31-8707-44C6-A902-E132C1126B4A"/>
     </dmn:informationRequirement>
     <dmn:decisionTable id="_94F995A2-E95F-4B81-8BA7-28D21BEA0082" hitPolicy="FIRST" preferredOrientation="Rule-as-Row">
       <dmn:input id="_0A6330B5-2E06-44F2-B0BB-F379BAD575B5">
@@ -90,9 +171,9 @@
           <dmn:text>Loan to Value Ratio</dmn:text>
         </dmn:inputExpression>
       </dmn:input>
-      <dmn:output id="_A9A42540-1A45-45BC-9BBB-FDE4095849DA" name="dmnDecision" typeRef="string" />
-      <dmn:output id="_10209E24-C554-4FFD-B21E-7A4216099CC3" name="dmnReason" typeRef="string" />
-      <dmn:annotation name="Annotations" />
+      <dmn:output id="_A9A42540-1A45-45BC-9BBB-FDE4095849DA" name="dmnDecision" typeRef="string"/>
+      <dmn:output id="_10209E24-C554-4FFD-B21E-7A4216099CC3" name="dmnReason" typeRef="string"/>
+      <dmn:annotation name="Annotations"/>
       <dmn:rule id="_20BD5E17-2AC7-4AB0-85EF-F0C707CD1CF1">
         <dmn:inputEntry id="_7EAC6F50-18B5-4A4A-AB89-F3AC2B97FF98">
           <dmn:text>&lt; 650</dmn:text>
@@ -107,13 +188,13 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_70EC3578-E933-4813-89DA-23F7EBE082FD">
-          <dmn:text>&quot;DENY&quot;</dmn:text>
+          <dmn:text>"DENY"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_6041ED8E-045F-415B-9D40-43425D2E4DEC">
-          <dmn:text>&quot;Credit score below underwriting minimum&quot;</dmn:text>
+          <dmn:text>"Credit score below underwriting minimum"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_498705D4-FA0C-488F-ACD9-ECC6317E7A47">
@@ -121,7 +202,7 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_C42AC66E-8F1C-47A4-A01F-99BE09A38A75">
-          <dmn:text>&quot;MEDIUM&quot;, &quot;HIGH&quot;</dmn:text>
+          <dmn:text>"MEDIUM", "HIGH"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_D9AD6D1A-7AC1-4DD7-8B77-BA9230E3CC55">
           <dmn:text>-</dmn:text>
@@ -130,13 +211,13 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_CEE0BB58-4CDA-424F-8363-A7A44068163A">
-          <dmn:text>&quot;DENY&quot;</dmn:text>
+          <dmn:text>"DENY"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_BBD1B741-4B64-462B-9301-347389BB887E">
-          <dmn:text>&quot;Elevated fraud risk detected&quot;</dmn:text>
+          <dmn:text>"Elevated fraud risk detected"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_76526EE3-B71E-4198-BD5E-153DA563AB9B">
@@ -153,13 +234,13 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_309968E6-6BC7-45D8-9FA7-0AF588CF5093">
-          <dmn:text>&quot;DENY&quot;</dmn:text>
+          <dmn:text>"DENY"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_3906A783-D927-496E-9214-F899D541C64B">
-          <dmn:text>&quot;Debt-to-income ratio exceeds 43% threshold&quot;</dmn:text>
+          <dmn:text>"Debt-to-income ratio exceeds 43% threshold"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_9E2EBD90-C527-4B0A-ABC7-2196E0F775D3">
@@ -176,13 +257,13 @@
           <dmn:text>&gt; 0.95</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_8B5C2351-FDE9-4E28-9CAB-CAA81C974B9C">
-          <dmn:text>&quot;DENY&quot;</dmn:text>
+          <dmn:text>"DENY"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_858970EE-6BF9-4FD2-B105-C9C042A91597">
-          <dmn:text>&quot;Loan-to-value ratio exceeds 95% threshold&quot;</dmn:text>
+          <dmn:text>"Loan-to-value ratio exceeds 95% threshold"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_533BA971-8DCD-4E5E-926D-5E85EFB7A99A">
@@ -190,7 +271,7 @@
           <dmn:text>&gt;= 700</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_D9A62095-CB85-4238-ACC7-B69CFDFEBB57">
-          <dmn:text>&quot;LOW&quot;</dmn:text>
+          <dmn:text>"LOW"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_C99153EA-EC71-4E77-8E05-35C6ECCB8922">
           <dmn:text>&lt;= 0.43</dmn:text>
@@ -199,13 +280,13 @@
           <dmn:text>&lt;= 0.80</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_1BA787A8-E567-4FD0-B0EA-3EF882A56BEA">
-          <dmn:text>&quot;APPROVE&quot;</dmn:text>
+          <dmn:text>"APPROVE"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_563D091F-FAD0-4AA1-A1A6-342FFACA3B4C">
-          <dmn:text>&quot;Strong financial profile&quot;</dmn:text>
+          <dmn:text>"Strong financial profile"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_6AFBEEC6-CBBF-49B8-A259-792AC01E0D5A">
@@ -213,7 +294,7 @@
           <dmn:text>&gt;= 650</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_94B78729-FED3-4C8F-9181-C74A62B71F6B">
-          <dmn:text>&quot;LOW&quot;</dmn:text>
+          <dmn:text>"LOW"</dmn:text>
         </dmn:inputEntry>
         <dmn:inputEntry id="_06149195-BE84-4DE1-AF43-A729EC3EFF0C">
           <dmn:text>&lt;= 0.43</dmn:text>
@@ -222,13 +303,13 @@
           <dmn:text>&lt;= 0.95</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_C987F939-83B2-49C2-AA33-33FA5A1510C0">
-          <dmn:text>&quot;APPROVE&quot;</dmn:text>
+          <dmn:text>"APPROVE"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_BFC63A66-7466-4BE7-9542-0BF70FD3D4B2">
-          <dmn:text>&quot;Acceptable financial profile&quot;</dmn:text>
+          <dmn:text>"Acceptable financial profile"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
       <dmn:rule id="_AF36DAE7-018E-41D8-90AC-CDDAADA316C8">
@@ -245,64 +326,64 @@
           <dmn:text>-</dmn:text>
         </dmn:inputEntry>
         <dmn:outputEntry id="_9337900B-C7BE-42DA-B9D9-9F6553BE0806">
-          <dmn:text>&quot;DENY&quot;</dmn:text>
+          <dmn:text>"DENY"</dmn:text>
         </dmn:outputEntry>
         <dmn:outputEntry id="_52B7E1E2-3820-487D-BEDC-D7E55C1672ED">
-          <dmn:text>&quot;Does not meet underwriting criteria&quot;</dmn:text>
+          <dmn:text>"Does not meet underwriting criteria"</dmn:text>
         </dmn:outputEntry>
         <dmn:annotationEntry>
-          <dmn:text></dmn:text>
+          <dmn:text/>
         </dmn:annotationEntry>
       </dmn:rule>
     </dmn:decisionTable>
   </dmn:decision>
-  <dmn:decision id="_EXTRACT_DMN_DECISION" name="dmnDecision">
-    <dmn:extensionElements />
-    <dmn:variable id="_EXTRACT_DMN_DECISION_VAR" name="dmnDecision" typeRef="string" />
+  <dmn:decision id="_EXTRACT_DMN_DECISION" name="dmnDecision"><dmn:description>Convenience decision that extracts the dmnDecision field from the Underwriting Decision structured output. Returns a string: "APPROVE" or "DENY". Use this output when the caller only needs the decision value without the full tUnderwritingResult object.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_EXTRACT_DMN_DECISION_VAR" name="dmnDecision" typeRef="string"/>
     <dmn:informationRequirement id="_EXTRACT_DMN_DECISION_REQ">
-      <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655" />
+      <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_EXTRACT_DMN_DECISION_EXPR">
       <dmn:text>Underwriting Decision.dmnDecision</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:decision id="_EXTRACT_DMN_REASON" name="dmnReason">
-    <dmn:extensionElements />
-    <dmn:variable id="_EXTRACT_DMN_REASON_VAR" name="dmnReason" typeRef="string" />
+  <dmn:decision id="_EXTRACT_DMN_REASON" name="dmnReason"><dmn:description>Convenience decision that extracts the dmnReason field from the Underwriting Decision structured output. Returns a string with the human-readable rationale for the approval or denial. Use this output when the caller only needs the reason text without the full tUnderwritingResult object.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_EXTRACT_DMN_REASON_VAR" name="dmnReason" typeRef="string"/>
     <dmn:informationRequirement id="_EXTRACT_DMN_REASON_REQ">
-      <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655" />
+      <dmn:requiredDecision href="#_138B996F-CC5E-40D1-8A3D-442758EF4655"/>
     </dmn:informationRequirement>
     <dmn:literalExpression id="_EXTRACT_DMN_REASON_EXPR">
       <dmn:text>Underwriting Decision.dmnReason</dmn:text>
     </dmn:literalExpression>
   </dmn:decision>
-  <dmn:inputData id="_E16B2168-DC27-4794-A32F-613674B18EBD" name="annualIncome">
-    <dmn:extensionElements />
-    <dmn:variable id="_92847F0B-0179-45BD-A397-FE530EA7C148" name="annualIncome" typeRef="number" />
+  <dmn:inputData id="_E16B2168-DC27-4794-A32F-613674B18EBD" name="annualIncome"><dmn:description>Applicant's gross annual income expressed as a number in currency units. Used to compute the monthly income denominator in the Debt to Income Ratio calculation (annualIncome / 12). Must be greater than zero to avoid division by zero at runtime.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_92847F0B-0179-45BD-A397-FE530EA7C148" name="annualIncome" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_B8F5562E-DEAE-4A25-9D15-B0147076AC34" name="monthlyExpenses">
-    <dmn:extensionElements />
-    <dmn:variable id="_56F652ED-BAD2-4A13-8D83-3E632276AD06" name="monthlyExpenses" typeRef="number" />
+  <dmn:inputData id="_B8F5562E-DEAE-4A25-9D15-B0147076AC34" name="monthlyExpenses"><dmn:description>Applicant's existing recurring monthly financial obligations, excluding the prospective loan payment. Expressed as a number in currency units. Added to the Monthly Payment Estimate when calculating the Debt to Income Ratio.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_56F652ED-BAD2-4A13-8D83-3E632276AD06" name="monthlyExpenses" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_FC133BE5-348C-48D8-8308-479456F905D6" name="loanAmount">
-    <dmn:extensionElements />
-    <dmn:variable id="_F058C044-5C20-4016-85F5-CD053141E2CA" name="loanAmount" typeRef="number" />
+  <dmn:inputData id="_FC133BE5-348C-48D8-8308-479456F905D6" name="loanAmount"><dmn:description>The total requested loan principal in currency units. Combined with downPayment to derive the net financed amount (loanAmount - downPayment), which is used in both the Monthly Payment Estimate and the Loan to Value Ratio calculations.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_F058C044-5C20-4016-85F5-CD053141E2CA" name="loanAmount" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_792F25A0-FDEB-4AE9-B801-43FD945F16CF" name="downPayment">
-    <dmn:extensionElements />
-    <dmn:variable id="_4CA71998-D97E-42A8-9B7C-CB49D9C210EA" name="downPayment" typeRef="number" />
+  <dmn:inputData id="_792F25A0-FDEB-4AE9-B801-43FD945F16CF" name="downPayment"><dmn:description>Cash amount the applicant will pay upfront, reducing the financed balance. Expressed as a number in currency units. Subtracted from loanAmount before computing Monthly Payment Estimate and Loan to Value Ratio.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_4CA71998-D97E-42A8-9B7C-CB49D9C210EA" name="downPayment" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_99D380B8-E42E-4E95-A35A-A823CE6CE282" name="creditScore">
-    <dmn:extensionElements />
-    <dmn:variable id="_60E71E60-397A-4A6F-9658-9E46C2D6C7FA" name="creditScore" typeRef="number" />
+  <dmn:inputData id="_99D380B8-E42E-4E95-A35A-A823CE6CE282" name="creditScore"><dmn:description>Numeric credit score for the applicant. Used directly as an input column in the Underwriting Decision table. Scores below 650 result in an immediate DENY; scores 650–699 qualify for conditional approval; scores 700 and above qualify for the strongest approval tier.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_60E71E60-397A-4A6F-9658-9E46C2D6C7FA" name="creditScore" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" name="propertyAppraisedValue">
-    <dmn:extensionElements />
-    <dmn:variable id="_59F7D28A-166A-4482-AD8A-FDE534A50F78" name="propertyAppraisedValue" typeRef="number" />
+  <dmn:inputData id="_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" name="propertyAppraisedValue"><dmn:description>Independently appraised market value of the subject property, expressed as a number in currency units. Used as the denominator in the Loan to Value Ratio calculation. Must be greater than zero to avoid division by zero at runtime.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_59F7D28A-166A-4482-AD8A-FDE534A50F78" name="propertyAppraisedValue" typeRef="number"/>
   </dmn:inputData>
-  <dmn:inputData id="_FFA6BC31-8707-44C6-A902-E132C1126B4A" name="fraudRiskLevel">
-    <dmn:extensionElements />
-    <dmn:variable id="_76A81A8B-58B7-4886-9740-4347AE9A2C95" name="fraudRiskLevel" typeRef="string" />
+  <dmn:inputData id="_FFA6BC31-8707-44C6-A902-E132C1126B4A" name="fraudRiskLevel"><dmn:description>Fraud screening classification produced by an upstream risk system. Accepted string values: "LOW", "MEDIUM", "HIGH". Any value of "MEDIUM" or "HIGH" triggers an immediate DENY regardless of all other financial metrics.</dmn:description>
+    <dmn:extensionElements/>
+    <dmn:variable id="_76A81A8B-58B7-4886-9740-4347AE9A2C95" name="fraudRiskLevel" typeRef="string"/>
   </dmn:inputData>
   <dmndi:DMNDI>
     <dmndi:DMNDiagram id="_3999C530-5ACA-4E91-A219-F98E300FA9AB" name="Default DRD" useAlternativeInputDataShape="false">
@@ -325,151 +406,152 @@
       </di:extension>
       <dmndi:DMNShape dmnElementRef="_E16B2168-DC27-4794-A32F-613674B18EBD" isCollapsed="false" id="dmnshape-_E16B2168-DC27-4794-A32F-613674B18EBD">
         <dmndi:DMNStyle id="_D0FFD5D8-4A40-4D72-B616-68BF08AEBB95">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="694" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_F652F6FB-F872-4699-9787-CA33E044BCF0" />
+        <dc:Bounds x="694" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_F652F6FB-F872-4699-9787-CA33E044BCF0"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_B8F5562E-DEAE-4A25-9D15-B0147076AC34" isCollapsed="false" id="dmnshape-_B8F5562E-DEAE-4A25-9D15-B0147076AC34">
         <dmndi:DMNStyle id="_748E0C96-00EE-40D6-B348-D9B2144814AE">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="500" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_4A7EDDF8-84AA-48A6-B9A8-B3A120795A5B" />
+        <dc:Bounds x="500" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_4A7EDDF8-84AA-48A6-B9A8-B3A120795A5B"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_FC133BE5-348C-48D8-8308-479456F905D6" isCollapsed="false" id="dmnshape-_FC133BE5-348C-48D8-8308-479456F905D6">
         <dmndi:DMNStyle id="_6FE7DB50-B8AE-421A-9273-469F72BE9533">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="1102" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_C774A623-01C9-4282-98AA-D8D405E448B5" />
+        <dc:Bounds x="1102" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_C774A623-01C9-4282-98AA-D8D405E448B5"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_792F25A0-FDEB-4AE9-B801-43FD945F16CF" isCollapsed="false" id="dmnshape-_792F25A0-FDEB-4AE9-B801-43FD945F16CF">
         <dmndi:DMNStyle id="_04BC7733-D516-4468-99E6-7F9110292CDA">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="888" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_FDEE813B-E203-4ACF-809A-51CDD3C29547" />
+        <dc:Bounds x="888" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_FDEE813B-E203-4ACF-809A-51CDD3C29547"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_99D380B8-E42E-4E95-A35A-A823CE6CE282" isCollapsed="false" id="dmnshape-_99D380B8-E42E-4E95-A35A-A823CE6CE282">
         <dmndi:DMNStyle id="_1CCD5A7D-C21D-4E3C-8033-1731598F1248">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="306" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_EB3EA647-5369-4D2E-8EAD-5D2CAFF907F9" />
+        <dc:Bounds x="306" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_EB3EA647-5369-4D2E-8EAD-5D2CAFF907F9"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" isCollapsed="false" id="dmnshape-_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE">
         <dmndi:DMNStyle id="_36913AB2-CA86-4A01-A918-2B049E21AFD8">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="1296" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_38B3904A-F87D-4A6D-99A2-87CFD1C682B3" />
+        <dc:Bounds x="1296" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_38B3904A-F87D-4A6D-99A2-87CFD1C682B3"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_FFA6BC31-8707-44C6-A902-E132C1126B4A" isCollapsed="false" id="dmnshape-_FFA6BC31-8707-44C6-A902-E132C1126B4A">
         <dmndi:DMNStyle id="_557AABB3-3108-444D-A317-392883FE4667">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="112" y="598" width="134" height="61" />
-        <dmndi:DMNLabel id="_03A8BB7F-2499-4E22-ADC1-85AE00A2F50E" />
+        <dc:Bounds x="112" y="598" width="134" height="61"/>
+        <dmndi:DMNLabel id="_03A8BB7F-2499-4E22-ADC1-85AE00A2F50E"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5" isCollapsed="false" id="dmnshape-_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5">
         <dmndi:DMNStyle id="_30807990-F8FB-4548-9D9F-A66FC9BBE36A">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="880" y="420" width="154" height="62" />
-        <dmndi:DMNLabel id="_94077856-56EA-4E9A-BFFB-61C4D226CE10" />
+        <dc:Bounds x="880" y="420" width="154" height="62"/>
+        <dmndi:DMNLabel id="_94077856-56EA-4E9A-BFFB-61C4D226CE10"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_E88896B2-607C-470C-8931-406359CE18A7" isCollapsed="false" id="dmnshape-_E88896B2-607C-470C-8931-406359CE18A7">
         <dmndi:DMNStyle id="_B748D685-DA38-4BFD-AE12-77825972F7FF">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="680" y="280" width="154" height="62" />
-        <dmndi:DMNLabel id="_DDDDC5F2-63F6-48D9-9C33-3A76C1E658C6" />
+        <dc:Bounds x="680" y="280" width="154" height="62"/>
+        <dmndi:DMNLabel id="_DDDDC5F2-63F6-48D9-9C33-3A76C1E658C6"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_4D630624-601F-4102-803C-9973C6601DF1" isCollapsed="false" id="dmnshape-_4D630624-601F-4102-803C-9973C6601DF1">
         <dmndi:DMNStyle id="_FBCC8885-82E8-4EAF-A58F-685E1418C897">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="1092" y="436" width="154" height="62" />
-        <dmndi:DMNLabel id="_9EA1BB66-B2DC-4BDA-B15D-D1F434AF459E" />
+        <dc:Bounds x="1092" y="436" width="154" height="62"/>
+        <dmndi:DMNLabel id="_9EA1BB66-B2DC-4BDA-B15D-D1F434AF459E"/>
       </dmndi:DMNShape>
       <dmndi:DMNShape dmnElementRef="_138B996F-CC5E-40D1-8A3D-442758EF4655" isCollapsed="false" id="dmnshape-_138B996F-CC5E-40D1-8A3D-442758EF4655">
         <dmndi:DMNStyle id="_118AA1DF-CEF0-406D-8906-DF3EA71BA1A5">
-          <dmndi:FillColor red="255" green="255" blue="255" />
-          <dmndi:StrokeColor red="0" green="0" blue="0" />
-          <dmndi:FontColor red="0" green="0" blue="0" />
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
         </dmndi:DMNStyle>
-        <dc:Bounds x="660" y="20" width="180" height="62" />
-        <dmndi:DMNLabel id="_B79C92B7-CA87-4A3D-B7B6-7A825809C231" />
+        <dc:Bounds x="660" y="20" width="180" height="62"/>
+        <dmndi:DMNLabel id="_B79C92B7-CA87-4A3D-B7B6-7A825809C231"/>
       </dmndi:DMNShape>
       <dmndi:DMNEdge id="dmnedge-_20C0928C-7291-4414-B5C4-5F59D8D131E8" dmnElementRef="_20C0928C-7291-4414-B5C4-5F59D8D131E8" sourceElement="dmnshape-_FC133BE5-348C-48D8-8308-479456F905D6" targetElement="dmnshape-_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5">
-        <di:waypoint x="1169" y="598" />
-        <di:waypoint x="957" y="482" />
+        <di:waypoint x="1169" y="598"/>
+        <di:waypoint x="957" y="482"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_3081D662-7A18-495D-9EDD-A6789A1FCAB2" dmnElementRef="_3081D662-7A18-495D-9EDD-A6789A1FCAB2" sourceElement="dmnshape-_792F25A0-FDEB-4AE9-B801-43FD945F16CF" targetElement="dmnshape-_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5">
-        <di:waypoint x="955" y="598" />
-        <di:waypoint x="957" y="482" />
+        <di:waypoint x="955" y="598"/>
+        <di:waypoint x="957" y="482"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_AA318B21-ED8C-427D-AB08-2D47098786A1" dmnElementRef="_AA318B21-ED8C-427D-AB08-2D47098786A1" sourceElement="dmnshape-_E16B2168-DC27-4794-A32F-613674B18EBD" targetElement="dmnshape-_E88896B2-607C-470C-8931-406359CE18A7">
-        <di:waypoint x="761" y="598" />
-        <di:waypoint x="757" y="342" />
+        <di:waypoint x="761" y="598"/>
+        <di:waypoint x="757" y="342"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_43AC3880-40F3-420A-84D5-F02BB55C0D2F" dmnElementRef="_43AC3880-40F3-420A-84D5-F02BB55C0D2F" sourceElement="dmnshape-_B8F5562E-DEAE-4A25-9D15-B0147076AC34" targetElement="dmnshape-_E88896B2-607C-470C-8931-406359CE18A7">
-        <di:waypoint x="567" y="598" />
-        <di:waypoint x="757" y="342" />
+        <di:waypoint x="567" y="598"/>
+        <di:waypoint x="757" y="342"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_4FFD6F0D-308D-4FE5-A8F0-EBB2135A0FBA" dmnElementRef="_4FFD6F0D-308D-4FE5-A8F0-EBB2135A0FBA" sourceElement="dmnshape-_49E05A4F-CF3C-4F0B-9CBF-B1ED840F70E5" targetElement="dmnshape-_E88896B2-607C-470C-8931-406359CE18A7">
-        <di:waypoint x="957" y="420" />
-        <di:waypoint x="757" y="342" />
+        <di:waypoint x="957" y="420"/>
+        <di:waypoint x="757" y="342"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_59231442-3396-4276-864C-14C0114DC244" dmnElementRef="_59231442-3396-4276-864C-14C0114DC244" sourceElement="dmnshape-_FC133BE5-348C-48D8-8308-479456F905D6" targetElement="dmnshape-_4D630624-601F-4102-803C-9973C6601DF1">
-        <di:waypoint x="1169" y="598" />
-        <di:waypoint x="1169" y="498" />
+        <di:waypoint x="1169" y="598"/>
+        <di:waypoint x="1169" y="498"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_F49C83C7-3BB6-410F-8987-BDCD20388193" dmnElementRef="_F49C83C7-3BB6-410F-8987-BDCD20388193" sourceElement="dmnshape-_792F25A0-FDEB-4AE9-B801-43FD945F16CF" targetElement="dmnshape-_4D630624-601F-4102-803C-9973C6601DF1">
-        <di:waypoint x="955" y="598" />
-        <di:waypoint x="1169" y="498" />
+        <di:waypoint x="955" y="598"/>
+        <di:waypoint x="1169" y="498"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_65F1D87F-6921-4F13-9EC5-4C2AB4AD8D3C" dmnElementRef="_65F1D87F-6921-4F13-9EC5-4C2AB4AD8D3C" sourceElement="dmnshape-_8B9FB84A-48B1-4A83-A01F-F66D53D3B8EE" targetElement="dmnshape-_4D630624-601F-4102-803C-9973C6601DF1">
-        <di:waypoint x="1363" y="598" />
-        <di:waypoint x="1169" y="498" />
+        <di:waypoint x="1363" y="598"/>
+        <di:waypoint x="1169" y="498"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_A7F905DE-23A5-49A0-BC3F-C78142A0F6A6" dmnElementRef="_A7F905DE-23A5-49A0-BC3F-C78142A0F6A6" sourceElement="dmnshape-_E88896B2-607C-470C-8931-406359CE18A7" targetElement="dmnshape-_138B996F-CC5E-40D1-8A3D-442758EF4655">
-        <di:waypoint x="757" y="280" />
-        <di:waypoint x="750" y="82" />
+        <di:waypoint x="757" y="280"/>
+        <di:waypoint x="750" y="82"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_7E02F394-CE71-4A14-83DE-1351B615FC2A" dmnElementRef="_7E02F394-CE71-4A14-83DE-1351B615FC2A" sourceElement="dmnshape-_4D630624-601F-4102-803C-9973C6601DF1" targetElement="dmnshape-_138B996F-CC5E-40D1-8A3D-442758EF4655">
-        <di:waypoint x="1169" y="436" />
-        <di:waypoint x="750" y="82" />
+        <di:waypoint x="1169" y="436"/>
+        <di:waypoint x="750" y="82"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_FEE2F9D2-F162-41CE-BA04-BDE9D712513D" dmnElementRef="_FEE2F9D2-F162-41CE-BA04-BDE9D712513D" sourceElement="dmnshape-_99D380B8-E42E-4E95-A35A-A823CE6CE282" targetElement="dmnshape-_138B996F-CC5E-40D1-8A3D-442758EF4655">
-        <di:waypoint x="373" y="598" />
-        <di:waypoint x="750" y="82" />
+        <di:waypoint x="373" y="598"/>
+        <di:waypoint x="750" y="82"/>
       </dmndi:DMNEdge>
       <dmndi:DMNEdge id="dmnedge-_8FA7A42A-7568-491A-9B87-1559B976C3CD" dmnElementRef="_8FA7A42A-7568-491A-9B87-1559B976C3CD" sourceElement="dmnshape-_FFA6BC31-8707-44C6-A902-E132C1126B4A" targetElement="dmnshape-_138B996F-CC5E-40D1-8A3D-442758EF4655">
-        <di:waypoint x="179" y="598" />
-        <di:waypoint x="750" y="82" />
+        <di:waypoint x="179" y="598"/>
+        <di:waypoint x="750" y="82"/>
       </dmndi:DMNEdge>
     </dmndi:DMNDiagram>
   </dmndi:DMNDI>
-</dmn:definitions>
+<dmn:knowledgeSource id="_48f8cd16-63a0-4bfe-a523-73858378962f" name="Consumer Financial Protection Bureau - QM Rule"><dmn:description>The Consumer Financial Protection Bureau Qualified Mortgage rule (12 CFR Part 1026, Regulation Z) establishes the 43% debt-to-income ratio as the maximum threshold for a qualified mortgage. This model enforces that threshold directly in the Underwriting Decision table: any DTI above 0.43 results in a DENY. The rule also informs the use of LTV as a risk signal.
+Reference: https://www.consumerfinance.gov/rules-policy/final-rules/ability-to-repay-and-qualified-mortgage-standards-under-the-truth-in-lending-act-regulation-z/</dmn:description></dmn:knowledgeSource></dmn:definitions>
